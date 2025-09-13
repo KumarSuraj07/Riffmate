@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="85" fill="#667eea"/>
+  <!-- Guitar strings -->
+  <line x1="64" y1="220" x2="448" y2="220" stroke="white" stroke-width="8"/>
+  <line x1="64" y1="256" x2="448" y2="256" stroke="white" stroke-width="8"/>
+  <line x1="64" y1="292" x2="448" y2="292" stroke="white" stroke-width="8"/>
+  <line x1="64" y1="328" x2="448" y2="328" stroke="white" stroke-width="8"/>
+  <line x1="64" y1="364" x2="448" y2="364" stroke="white" stroke-width="8"/>
+  <line x1="64" y1="400" x2="448" y2="400" stroke="white" stroke-width="8"/>
+  <!-- Musical notes -->
+  <circle cx="160" cy="128" r="20" fill="white"/>
+  <rect x="176" y="64" width="10" height="80" fill="white"/>
+  <circle cx="352" cy="112" r="16" fill="white"/>
+  <rect x="364" y="56" width="8" height="72" fill="white"/>
+  <circle cx="256" cy="144" r="14" fill="white"/>
+  <rect x="266" y="96" width="7" height="64" fill="white"/>
+  <circle cx="120" cy="160" r="12" fill="white"/>
+  <rect x="128" y="120" width="6" height="52" fill="white"/>
+</svg>
