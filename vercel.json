@@ -1,5 +1,30 @@
 {
-  "buildCommand": "cd client && npm run build",
-  "outputDirectory": "client/build",
-  "installCommand": "cd client && npm install"
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/build/$1"
+    }
+  ],
+  "env": {
+    "SUPABASE_URL": "https://qdngfgnrfrrisvlskdmh.supabase.co",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkbmdmZ25yZnJyaXN2bHNrZG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NzA1NTYsImV4cCI6MjA3MzQ0NjU1Nn0.SuZvvgkBTCL8unAHtsBpQ4JcmOR1_uRWMkkut0LQyfk"
+  }
 }

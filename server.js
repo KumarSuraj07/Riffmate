@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2');
+const { createClient } = require('@supabase/supabase-js');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -10,75 +10,75 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Database connection
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
+// Supabase connection
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
-db.connect((err) => {
-  if (err) {
-    console.error('Database connection failed:', err);
-    return;
-  }
-  console.log('Connected to MySQL database');
-});
+console.log('Connected to Supabase database');
 
 // API Routes
-app.get('/api/chords', (req, res) => {
-  const query = 'SELECT * FROM chords ORDER BY difficulty, name';
-  db.query(query, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json(results);
-  });
-});
-
-app.get('/api/tabs', (req, res) => {
-  const { search } = req.query;
-  let query = 'SELECT * FROM tabs';
-  let params = [];
-  
-  if (search) {
-    query += ' WHERE song_name LIKE ? OR artist LIKE ?';
-    params = [`%${search}%`, `%${search}%`];
+app.get('/api/chords', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('chords')
+      .select('*')
+      .order('difficulty')
+      .order('name');
+    
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-  
-  query += ' ORDER BY artist, song_name';
-  
-  db.query(query, params, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json(results);
-  });
 });
 
-app.get('/api/scales', (req, res) => {
-  const query = 'SELECT * FROM scales ORDER BY name';
-  db.query(query, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+app.get('/api/tabs', async (req, res) => {
+  try {
+    const { search } = req.query;
+    let query = supabase.from('tabs').select('*');
+    
+    if (search) {
+      query = query.or(`song_name.ilike.%${search}%,artist.ilike.%${search}%`);
     }
-    res.json(results);
-  });
+    
+    const { data, error } = await query.order('artist').order('song_name');
+    
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.get('/api/theory', (req, res) => {
-  const query = 'SELECT * FROM theory ORDER BY category, title';
-  db.query(query, (err, results) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json(results);
-  });
+app.get('/api/scales', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('scales')
+      .select('*')
+      .order('name');
+    
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/theory', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('theory')
+      .select('*')
+      .order('category')
+      .order('title');
+    
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(PORT, () => {
