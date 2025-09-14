@@ -1,4 +1,9 @@
-const mysql = require('mysql2/promise');
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -6,18 +11,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT || 3306,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME
-    });
+    const { data, error } = await supabase
+      .from('scales')
+      .select('*')
+      .order('name');
 
-    const [rows] = await connection.execute('SELECT * FROM scales ORDER BY name');
-    await connection.end();
+    if (error) throw error;
 
-    res.status(200).json(rows);
+    res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,4 +1,9 @@
-const mysql = require('mysql2/promise');
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -7,28 +12,22 @@ export default async function handler(req, res) {
 
   try {
     const { search } = req.query;
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT || 3306,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME
-    });
-
-    let query = 'SELECT * FROM tabs';
-    let params = [];
+    
+    let query = supabase
+      .from('tabs')
+      .select('*');
     
     if (search) {
-      query += ' WHERE song_name LIKE ? OR artist LIKE ?';
-      params = [`%${search}%`, `%${search}%`];
+      query = query.or(`song_name.ilike.%${search}%,artist.ilike.%${search}%`);
     }
     
-    query += ' ORDER BY artist, song_name';
-    
-    const [rows] = await connection.execute(query, params);
-    await connection.end();
+    const { data, error } = await query
+      .order('artist')
+      .order('song_name');
 
-    res.status(200).json(rows);
+    if (error) throw error;
+
+    res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
