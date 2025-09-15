@@ -20,6 +20,23 @@ const Chords = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching chords:', error);
+      // Fallback data for testing
+      setChords([
+        {
+          id: 1,
+          name: 'C Major',
+          difficulty: 'Beginner',
+          diagram: 'x32010',
+          description: 'Basic C major chord - great for beginners'
+        },
+        {
+          id: 2,
+          name: 'G Major',
+          difficulty: 'Beginner',
+          diagram: '320003',
+          description: 'Essential G major chord'
+        }
+      ]);
       setLoading(false);
     }
   };

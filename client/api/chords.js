@@ -6,21 +6,36 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    console.log('Fetching chords from Supabase...');
+    
     const { data, error } = await supabase
       .from('chords')
       .select('*')
       .order('difficulty')
       .order('name');
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
 
-    res.status(200).json(data);
+    console.log('Chords fetched successfully:', data?.length || 0);
+    res.status(200).json(data || []);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('API Error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      details: 'Failed to fetch chords from database'
+    });
   }
 }
