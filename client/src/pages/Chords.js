@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
 
 import SlideCard from '../components/SlideCard';
 import ChordDiagram from '../components/ChordDiagram';
@@ -14,22 +15,14 @@ const Chords = () => {
   }, []);
 
   const fetchChords = async () => {
-    // Use static data instead of API
-    setChords([
-      { id: 1, name: 'C Major', difficulty: 'Beginner', diagram: '0-1-0-2-3-0', description: 'Basic open C major chord' },
-      { id: 2, name: 'G Major', difficulty: 'Beginner', diagram: '3-2-0-0-3-3', description: 'Basic open G major chord' },
-      { id: 3, name: 'Am', difficulty: 'Beginner', diagram: '0-0-2-2-1-0', description: 'A minor chord' },
-      { id: 4, name: 'F Major', difficulty: 'Intermediate', diagram: '1-1-3-3-2-1', description: 'F major barre chord' },
-      { id: 5, name: 'D Major', difficulty: 'Beginner', diagram: 'x-x-0-2-3-2', description: 'Open D major chord' },
-      { id: 6, name: 'E Major', difficulty: 'Beginner', diagram: '0-2-2-1-0-0', description: 'Open E major chord' },
-      { id: 7, name: 'Dm', difficulty: 'Beginner', diagram: 'x-x-0-2-3-1', description: 'Open D minor chord' },
-      { id: 8, name: 'E Minor', difficulty: 'Beginner', diagram: '0-2-2-0-0-0', description: 'Open E minor chord' },
-      { id: 9, name: 'B7', difficulty: 'Intermediate', diagram: 'x-2-1-2-0-2', description: 'Basic B7 open chord' },
-      { id: 10, name: 'A Major', difficulty: 'Beginner', diagram: 'x-0-2-2-2-0', description: 'Open A major chord' },
-      { id: 11, name: 'Bm', difficulty: 'Intermediate', diagram: 'x-2-4-4-3-2', description: 'Barre B minor chord' },
-      { id: 12, name: 'C7', difficulty: 'Intermediate', diagram: 'x-3-2-3-1-0', description: 'C dominant 7 chord for blues' }
-    ]);
-    setLoading(false);
+    try {
+      const response = await axios.get('/api/chords');
+      setChords(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching chords:', error);
+      setLoading(false);
+    }
   };
 
   const filteredChords = filter === 'All' 

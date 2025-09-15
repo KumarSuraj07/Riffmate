@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
 import SlideCard from '../components/SlideCard';
 import CircleOfFifths from '../components/CircleOfFifths';
@@ -13,15 +14,14 @@ const Theory = () => {
   }, []);
 
   const fetchTheory = async () => {
-    setTheory([
-      { id: 1, title: 'Circle of Fifths', content: 'The circle of fifths is a visual representation of key signatures and their relationships. It shows how keys are related by perfect fifth intervals.', category: 'Theory' },
-      { id: 2, title: 'Basic Chord Construction', content: 'Chords are built using intervals from scales. A major chord uses the 1st, 3rd, and 5th degrees of the major scale.', category: 'Harmony' },
-      { id: 3, title: 'Understanding Time Signatures', content: 'Time signatures tell us how to count time in music. The top number shows beats per measure, bottom shows note value.', category: 'Rhythm' },
-      { id: 4, title: 'Key Relationships', content: 'The Circle of Fifths helps musicians understand relationships between major and minor keys and their shared notes.', category: 'Theory' },
-      { id: 5, title: 'Chord Progressions', content: 'Common progressions like I-IV-V-I use the circle to show how chords relate and create harmonic movement.', category: 'Theory' },
-      { id: 6, title: 'Sharps and Flats', content: 'Moving clockwise around the circle adds sharps, while counterclockwise adds flats to key signatures.', category: 'Theory' }
-    ]);
-    setLoading(false);
+    try {
+      const response = await axios.get('/api/theory');
+      setTheory(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching theory:', error);
+      setLoading(false);
+    }
   };
 
 
