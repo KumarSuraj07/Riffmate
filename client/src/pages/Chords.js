@@ -16,13 +16,29 @@ const Chords = () => {
   const fetchChords = async () => {
     try {
       const response = await axios.get('/api/chords');
-      setChords(response.data);
+      if (response.data && response.data.length > 0) {
+        setChords(response.data);
+      } else {
+        // Use fallback data if API returns empty
+        setChords(getFallbackChords());
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching chords:', error);
+      // Use fallback data if API fails
+      setChords(getFallbackChords());
       setLoading(false);
     }
   };
+
+  const getFallbackChords = () => [
+    { id: 1, name: 'C Major', difficulty: 'Beginner', diagram: '0-1-0-2-3-0', description: 'Basic open C major chord' },
+    { id: 2, name: 'G Major', difficulty: 'Beginner', diagram: '3-2-0-0-3-3', description: 'Basic open G major chord' },
+    { id: 3, name: 'Am', difficulty: 'Beginner', diagram: '0-0-2-2-1-0', description: 'A minor chord' },
+    { id: 4, name: 'F Major', difficulty: 'Intermediate', diagram: '1-1-3-3-2-1', description: 'F major barre chord' },
+    { id: 5, name: 'D Major', difficulty: 'Beginner', diagram: 'x-x-0-2-3-2', description: 'Open D major chord' },
+    { id: 6, name: 'E Major', difficulty: 'Beginner', diagram: '0-2-2-1-0-0', description: 'Open E major chord' }
+  ]
 
   const filteredChords = filter === 'All' 
     ? chords 
