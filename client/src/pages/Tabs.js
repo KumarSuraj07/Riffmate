@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+
 import SlideCard from '../components/SlideCard';
 import TabDiagram from '../components/TabDiagram';
 
@@ -15,26 +15,28 @@ const Tabs = () => {
   }, [searchTerm]);
 
   const fetchTabs = async () => {
-    try {
-      const response = await axios.get(`/api/tabs${searchTerm ? `?search=${searchTerm}` : ''}`);
-      if (response.data && response.data.length > 0) {
-        setTabs(response.data);
-      } else {
-        setTabs(getFallbackTabs());
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching tabs:', error);
-      setTabs(getFallbackTabs());
-      setLoading(false);
-    }
+    const allTabs = [
+      { id: 1, song_name: 'Wonderwall', artist: 'Oasis', tab_content: 'Em7-G-D-C progression', difficulty: 'Beginner' },
+      { id: 2, song_name: 'Smoke on the Water', artist: 'Deep Purple', tab_content: '0-3-5-0-3-6-5-0-3-5-3-0', difficulty: 'Beginner' },
+      { id: 3, song_name: 'Stairway to Heaven', artist: 'Led Zeppelin', tab_content: 'Am-C-D-F-G progression', difficulty: 'Intermediate' },
+      { id: 4, song_name: 'Back in Black', artist: 'AC/DC', tab_content: 'E5 power chord riff with palm muting', difficulty: 'Intermediate' },
+      { id: 5, song_name: 'Sweet Child O Mine', artist: 'Guns N Roses', tab_content: 'Intro arpeggio riff with string skipping', difficulty: 'Intermediate' },
+      { id: 6, song_name: 'Highway to Hell', artist: 'AC/DC', tab_content: 'Open power chord progression with steady rhythm', difficulty: 'Beginner' },
+      { id: 7, song_name: 'Enter Sandman', artist: 'Metallica', tab_content: 'Main riff with sliding power chords and open strings', difficulty: 'Intermediate' },
+      { id: 8, song_name: 'Seven Nation Army', artist: 'The White Stripes', tab_content: 'Simple riff using octave power chords', difficulty: 'Beginner' }
+    ];
+    
+    // Filter by search term if provided
+    const filteredTabs = searchTerm 
+      ? allTabs.filter(tab => 
+          tab.song_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          tab.artist.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : allTabs;
+    
+    setTabs(filteredTabs);
+    setLoading(false);
   };
-
-  const getFallbackTabs = () => [
-    { id: 1, song_name: 'Wonderwall', artist: 'Oasis', tab_content: 'Em7-G-D-C progression', difficulty: 'Beginner' },
-    { id: 2, song_name: 'Smoke on the Water', artist: 'Deep Purple', tab_content: '0-3-5-0-3-6-5-0-3-5-3-0', difficulty: 'Beginner' },
-    { id: 3, song_name: 'Stairway to Heaven', artist: 'Led Zeppelin', tab_content: 'Am-C-D-F-G progression', difficulty: 'Intermediate' }
-  ]
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);

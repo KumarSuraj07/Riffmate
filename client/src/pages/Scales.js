@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+
 import SlideCard from '../components/SlideCard';
 
 const Scales = () => {
@@ -12,14 +12,17 @@ const Scales = () => {
   }, []);
 
   const fetchScales = async () => {
-    try {
-      const response = await axios.get('/api/scales');
-      setScales(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching scales:', error);
-      setLoading(false);
-    }
+    setScales([
+      { id: 1, name: 'C Major', pattern: 'C-D-E-F-G-A-B', description: 'Natural major scale with no sharps or flats', example: 'Do-Re-Mi-Fa-Sol-La-Ti' },
+      { id: 2, name: 'A Minor', pattern: 'A-B-C-D-E-F-G', description: 'Natural minor scale, relative to C major', example: 'La-Ti-Do-Re-Mi-Fa-Sol' },
+      { id: 3, name: 'G Major', pattern: 'G-A-B-C-D-E-F#', description: 'Major scale with one sharp (F#)', example: 'Sol-La-Ti-Do-Re-Mi-Fa#' },
+      { id: 4, name: 'D Major', pattern: 'D-E-F#-G-A-B-C#', description: 'Major scale with two sharps (F#, C#)', example: 'Re-Mi-Fi-Sol-La-Ti-Do#' },
+      { id: 5, name: 'E Minor', pattern: 'E-F#-G-A-B-C-D', description: 'Natural minor scale, relative to G major', example: 'Mi-Fi-Sol-La-Ti-Do-Re' },
+      { id: 6, name: 'F Major', pattern: 'F-G-A-Bb-C-D-E', description: 'Major scale with one flat (Bb)', example: 'Fa-Sol-La-Te-Do-Re-Mi' },
+      { id: 7, name: 'D Minor', pattern: 'D-E-F-G-A-Bb-C', description: 'Natural minor scale, relative to F major', example: 'Re-Mi-Fa-Sol-La-Te-Do' },
+      { id: 8, name: 'E Major', pattern: 'E-F#-G#-A-B-C#-D#', description: 'Major scale with four sharps', example: 'Mi-Fi-Sol#-La-Ti-Do#-Re#' }
+    ]);
+    setLoading(false);
   };
 
   if (loading) {
